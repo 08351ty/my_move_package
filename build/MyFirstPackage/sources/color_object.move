@@ -48,6 +48,23 @@ module tutorial::color_object {
     public entry fun transfer(object: ColorObject, recipient: address) {
         transfer::transfer(object, recipient);
     }
+
+    public entry fun freeze_object(object: ColorObject) {
+        transfer::freeze_object(object);
+    }
+
+    public entry fun create_immutable(red: u8, green: u8, blue: u8, ctx: &mut TxContext) {
+        let color_object = new(red, green, blue, ctx);
+        transfer::freeze_object(color_object);
+    }
+
+    public entry fun update(object: &mut ColorObject, red: u8, green: u8, blue: u8) {
+        object.red = red;
+        object.green = green;
+        object.blue = blue;
+    }
+
+
 }
 
 #[test_only]
@@ -164,6 +181,31 @@ module tutorial::color_objectTests {
         {
             assert!(test_scenario::can_take_owned<ColorObject>(scenario), 0);
         };
+    }
+
+    #[test]
+    fun test_immutable() {
+        let sender1 = @0x1;
+        let scenario = &mut test_scenario::begin(&sender1);
+        {
+            let ctx = test_scenario::ctx(scenario);
+            color_object::create_immutable(255, 0, 255, ctx);
+        };
+        test_scenario::next_tx(scenario, &sender1);
+        {
+            //take_owned does not work for immutable objects
+            assert!(!test_scenario::can_take_owned<ColorObject>(scenario), 0);
+        };
+        let sender2 = @0x2;
+        test_scenario::next_tx(scenario, &sender2);
+        {
+            let object_wrapper = test_scenario::take_immutable<ColorObject>(scenario);
+            let object = test_scenario::borrow(&object_wrapper);
+            let (red, green, blue) = color_object::get_color(object);
+            assert!(red == 255 && green == 0 && blue == 255, 0);
+            test_scenario::return_immutable(scenario, object_wrapper);
+        };
+
     }
 
 
