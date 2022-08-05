@@ -6,10 +6,10 @@ compiled_package_info:
     std: "0000000000000000000000000000000000000001"
     sui: "0000000000000000000000000000000000000002"
     tutorial: "0000000000000000000000000000000000000000"
-  source_digest: 6AB3C503E7E1AEC9DD20B57478EC67A3C1AEA882BE84BDB393818DE4D4AA81B3
+  source_digest: 412FDBD817A099E251BAC9CC029F81230EFF8F3B1420406E37B43FCE7F439C61
   build_flags:
-    dev_mode: false
-    test_mode: false
+    dev_mode: true
+    test_mode: true
     generate_docs: false
     generate_abis: false
     install_dir: ~
