@@ -74,4 +74,7 @@ module tutorial::trusted_swap {
         object::delete(id2);
 
     }
+
+
+
 }
